@@ -1,6 +1,8 @@
 //
 // Created by AbeChaudry on 4/15/20.
 //
+#include <wiringPi.h>
+#include <softPwm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
