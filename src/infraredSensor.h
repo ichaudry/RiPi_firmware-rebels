@@ -8,8 +8,7 @@
 
 #define IR_SENSOR	15
 #define PI 3.1415926535
-//The number of pulses in one revolution
-#define N 20
+
 
 void initializeIR();
 void * getSpeed();

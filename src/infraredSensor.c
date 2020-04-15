@@ -13,6 +13,9 @@
        //Number of pulses
        double n=0;
 
+       //The number of pulses in one revolution
+       double N=20;
+
        int count=0;
 
        clock_t t;
