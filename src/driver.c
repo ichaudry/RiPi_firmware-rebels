@@ -6,7 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <pthread.h>
 #include "motors.h"
+#include "infraredSensor.h"
 
 
 
@@ -28,35 +30,39 @@ void interruptHandler(){
 int main(void){
     signal(SIGINT,interruptHandler);
 
+    //Thread to run infraredSensor that gets speed
+    pthread_t infraredSensorTID;
+
     int i;
-    if(wiringPiSetup() == -1){ //when initialize wiring failed, print messageto screen
+    if(wiringPiSetup() == -1){ //when initialize wiring failed, print message to screen
         printf("setup wiringPi failed !");
         return 1;
     }
 
+
     initializeMotors();
 
     initializePWM();
-    
+
+
     //Go forward
     initializeMotorsF();
 
     accelerate();
 
-    delay(5000);
+    while(1){
+        printf("Starting thread \n");
+        pthread_create(&infraredSensorTID,NULL, &getSpeed,NULL;
 
-    brake();
+        printf("Waiting for the created thread to terminate\n");
+        pthread_join(infraredSensorTID, NULL);
 
-    delay(3000);
 
-    //Go backward
-    initializeMotorsB();
+        printf("Sleeping for 3 second\n");
+        delay(3000);
 
-    accelerate();
+    }
 
-    delay(5000);
-
-    brake();
 
 
     return 0;
