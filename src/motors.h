@@ -27,6 +27,10 @@
 #define MaxSpeed        100
 #define MinSpeed        0
 
+
+//Initialize PWM settings
+void initializePWM()
+
 //Initialize Motor Pins
 void initializeMotors();
 

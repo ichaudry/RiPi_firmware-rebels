@@ -5,6 +5,15 @@
 
 
 
+/**
+ * Setting the range for PWM to control and set car speed
+ */
+void initializePWM() {
+    softPwmCreate(Motor1Enable, MinSpeed, MaxSpeed);
+    softPwmCreate(Motor2Enable, MinSpeed, MaxSpeed);
+    softPwmCreate(Motor3Enable, MinSpeed, MaxSpeed);
+    softPwmCreate(Motor4Enable, MinSpeed, MaxSpeed);
+}
 
 /**
  *Initialize all motor pins to output

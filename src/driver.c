@@ -36,13 +36,8 @@ int main(void){
 
     initializeMotors();
 
-    //Settings for pulse width modulation
-    softPwmCreate(Motor1Enable,MinSpeed,MaxSpeed);
-    softPwmCreate(Motor2Enable,MinSpeed,MaxSpeed);
-    softPwmCreate(Motor3Enable,MinSpeed,MaxSpeed);
-    softPwmCreate(Motor4Enable,MinSpeed,MaxSpeed);
-
-
+    initializePWM();
+    
     //Go forward
     initializeMotorsF();
 
