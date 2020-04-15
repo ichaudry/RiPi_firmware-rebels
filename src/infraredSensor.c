@@ -5,7 +5,7 @@
 #include "infraredSensor.h"
 
     //The number of pulses in one revolution
-    double * N=20;
+    double * N=20.0;
 
     void initializeIR() {
        pinMode(IR_SENSOR,INPUT);
@@ -39,7 +39,7 @@
 
        printf("The time taken for the function is %f\nThe PI value is %f\nThe value of n is %lu\nThe value of N is %d\n",time_taken,PI,n,&N);
 
-       double angularSpeed= (2* PI * n )/(N * time_taken);
+       double angularSpeed= (2* PI * n )/(&N * time_taken);
 
        printf("The angular speed is %lu\n",angularSpeed);
 
