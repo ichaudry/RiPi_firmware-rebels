@@ -41,6 +41,7 @@ int main(void){
 
 
     initializeMotors();
+    initializeIR();
 
     initializePWM();
 
@@ -52,7 +53,7 @@ int main(void){
 
     while(1){
         printf("Starting thread \n");
-        pthread_create(&infraredSensorTID,NULL, &getSpeed,NULL;
+        pthread_create(&infraredSensorTID,NULL, &getSpeed,NULL);
 
         printf("Waiting for the created thread to terminate\n");
         pthread_join(infraredSensorTID, NULL);
