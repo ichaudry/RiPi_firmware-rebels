@@ -29,7 +29,7 @@
 
 
 //Initialize PWM settings
-void initializePWM()
+void initializePWM();
 
 //Initialize Motor Pins
 void initializeMotors();
