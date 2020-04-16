@@ -5,7 +5,7 @@
 #include "infraredSensor.h"
 
     //The number of pulses in one revolution
-    double * N=20.0;
+    double N=20.0;
 
     void initializeIR() {
        pinMode(IR_SENSOR,INPUT);
