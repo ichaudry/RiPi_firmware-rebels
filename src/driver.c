@@ -51,13 +51,25 @@ int main(void){
 
     accelerate();
 
+    threadArgs *threadArgs;
+
+     //Thread arguments structure
+        threadArgs=malloc(sizeof(threadArgs));
+        threadArgs->N=20;
+        
+
     while(1){
+       
+
+
         printf("Starting thread \n");
-        pthread_create(&infraredSensorTID,NULL, &getSpeed,NULL);
+     
+        pthread_create(&infraredSensorTID,NULL, &getSpeed,(void * )threadArgs);
 
         printf("Waiting for the created thread to terminate\n");
         pthread_join(infraredSensorTID, NULL);
 
+        
 
         printf("Sleeping for 3 second\n");
         delay(3000);
@@ -65,6 +77,7 @@ int main(void){
     }
 
 
+    free(threadArgs);
 
     return 0;
 }
