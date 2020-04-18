@@ -3,16 +3,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
-#include "infraredSensor1.h"
+#include "infraredSensor2.h"
 
-    //The number of pulses in one revolution
-    //double N=20.0;
-
-    void initializeIR1() {
-       pinMode(IR_SENSOR,INPUT);
+    void initializeIR2() {
+        pinMode(MOSI,INPUT);
+        pinMode(MISO,OUTPUT);
+        pinMode(SCLK,INPUT);
+        pinMode(CE0,INPUT);
     }
 
-    void * getSpeedIR1() {
+    void * getSpeedIR2() {
         //Number of pulses
         double n=0;
         double PI=3.14159265;
@@ -26,17 +26,15 @@
         t = clock();
 
         while(count<50000000){
-            // printf("This is the input from the IR Sensor %d\n",digitalRead(IR_SENSOR));
-            if(digitalRead(IR_SENSOR)==1){
+            if(digitalRead(MOSI)==1){
                 n++;
 
-                while(digitalRead(IR_SENSOR)==1){
+                while(digitalRead(MOSI)==1){
                     //Wait for it to transition beofre get the next count
                 }
             }
-            
             count++;
-        }
+    }
 
         printf("This is the time before subtraction %f\n",(double) t);
 
@@ -51,7 +49,9 @@
 
         double angularSpeed= (2* PI * n )/(N * time_taken);
 
-        printf("The angular speed of motor 1 is %f\n",angularSpeed);
+        printf("The angular speed of motor 2 is %f\n",angularSpeed);
 
-    }
+   
+}
+
 

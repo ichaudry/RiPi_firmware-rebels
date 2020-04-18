@@ -27,6 +27,10 @@ void interruptHandler(){
 int main(void){
     signal(SIGINT,interruptHandler);
 
+    //Thread to run infraredSensor that gets speed
+    pthread_t infraredSensor1TID;
+    pthread_t infraredSensor2TID;
+
     int i;
 
     if(wiringPiSetup() == -1){ //when initialize wiring failed, print message to screen
@@ -36,7 +40,8 @@ int main(void){
 
 
     initializeMotors();
-    initializeIR();
+    initializeIR1();
+    initializeIR2();
 
     initializePWM();
 
@@ -51,10 +56,13 @@ int main(void){
 
         printf("Starting thread \n");
      
-        pthread_create(&infraredSensorTID,NULL, &getSpeed,NULL);
+        pthread_create(&infraredSensor1TID,NULL, &getSpeedIR1,NULL);
+        pthread_create(&infraredSensor2TID,NULL, &getSpeedIR2,NULL);
+
 
         printf("Waiting for the created thread to terminate\n");
-        pthread_join(infraredSensorTID, NULL);
+        pthread_join(infraredSensor1TID, NULL);
+        pthread_join(infraredSensor2TID, NULL);
 
     
         printf("Sleeping for 3 second\n");
