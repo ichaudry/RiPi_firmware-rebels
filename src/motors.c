@@ -3,8 +3,6 @@
 #include <softPwm.h>
 #include "motors.h"
 
-
-
 /**
  * Setting the range for PWM to control and set car speed
  */

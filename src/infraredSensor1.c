@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
-#include "infraredSensor.h"
+#include "infraredSensor1.h"
 
     //The number of pulses in one revolution
     //double N=20.0;
@@ -12,49 +12,46 @@
        pinMode(IR_SENSOR,INPUT);
     }
 
-    void * getSpeed(void * arguments) {
-       //Number of pulses
-       double n=0;
-
-        threadArgs * args= (threadArgs * )arguments;
-
-        
-        double N=args->N;
-        
+    void * getSpeed() {
+        //Number of pulses
+        double n=0;
         double PI=3.14159265;
 
-       int count=0;
+        //Number of pulses per revolution
+        double N= 20;
 
-       clock_t t;
-       t = clock();
+        int count=0;
 
-      while(count<50000000){
-           // printf("This is the input from the IR Sensor %d\n",digitalRead(IR_SENSOR));
-           if(digitalRead(IR_SENSOR)==1){
-               n++;
+        clock_t t;
+        t = clock();
 
-               while(digitalRead(IR_SENSOR)==1){
-                   //Wait for it to transition beofre get the next count
-               }
-           }
-           
-           count++;
-       }
+        while(count<50000000){
+            // printf("This is the input from the IR Sensor %d\n",digitalRead(IR_SENSOR));
+            if(digitalRead(IR_SENSOR)==1){
+                n++;
 
-       printf("This is the time before subtraction %f\n",(double) t);
+                while(digitalRead(IR_SENSOR)==1){
+                    //Wait for it to transition beofre get the next count
+                }
+            }
+            
+            count++;
+        }
 
-       t = clock() - t;
+        printf("This is the time before subtraction %f\n",(double) t);
+
+        t = clock() - t;
 
 
-       printf("This is the time after subtraction %f\n",(double) t);
+        printf("This is the time after subtraction %f\n",(double) t);
 
-       double time_taken = ((double)t)/((double)CLOCKS_PER_SEC); // in seconds
+        double time_taken = ((double)t)/((double)CLOCKS_PER_SEC); // in seconds
 
-       printf("The time taken for the function is %f\nThe PI value is %f\nThe value of n is %f\nThe value of N is %f\n",time_taken,PI,n,N);
+        printf("The time taken for the function is %f\nThe PI value is %f\nThe value of n is %f\nThe value of N is %f\n",time_taken,PI,n,N);
 
-       double angularSpeed= (2* PI * n )/(N * time_taken);
+        double angularSpeed= (2* PI * n )/(N * time_taken);
 
-       printf("The angular speed is %f\n",angularSpeed);
+        printf("The angular speed is %f\n",angularSpeed);
 
-   }
+    }
 
