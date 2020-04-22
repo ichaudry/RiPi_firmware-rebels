@@ -8,9 +8,8 @@
 #include <signal.h>
 #include <pthread.h>
 #include "motors.h"
-#include "infraredSensor.h"
-
-
+#include "infraredSensor1.h"
+#include "infraredSensor2.h"
 
 //interrupt handler
 void interruptHandler(){
@@ -25,15 +24,15 @@ void interruptHandler(){
     exit(0);
 }
 
-
-
 int main(void){
     signal(SIGINT,interruptHandler);
 
     //Thread to run infraredSensor that gets speed
-    pthread_t infraredSensorTID;
+    pthread_t infraredSensor1TID;
+    // pthread_t infraredSensor2TID;
 
     int i;
+
     if(wiringPiSetup() == -1){ //when initialize wiring failed, print message to screen
         printf("setup wiringPi failed !");
         return 1;
@@ -41,7 +40,8 @@ int main(void){
 
 
     initializeMotors();
-    initializeIR();
+    initializeIR1();
+    // initializeIR2();
 
     initializePWM();
 
@@ -52,19 +52,23 @@ int main(void){
     accelerate();
 
     while(1){
+    
+
         printf("Starting thread \n");
-        pthread_create(&infraredSensorTID,NULL, &getSpeed,NULL);
+     
+        pthread_create(&infraredSensor1TID,NULL, &getSpeedIR1,NULL);
+        // pthread_create(&infraredSensor2TID,NULL, &getSpeedIR2,NULL);
+
 
         printf("Waiting for the created thread to terminate\n");
-        pthread_join(infraredSensorTID, NULL);
+        pthread_join(infraredSensor1TID, NULL);
+        // pthread_join(infraredSensor2TID, NULL);
 
-
+    
         printf("Sleeping for 3 second\n");
         delay(3000);
 
     }
-
-
 
     return 0;
 }
