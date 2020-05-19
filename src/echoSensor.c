@@ -37,7 +37,8 @@ void * echoSensorData(void * argument)
 		delay(0.05);
 		digitalWrite(TRIGGER,LOW);
 		
-        while(digitalRead(ECHO)==LOW){
+
+    while(digitalRead(ECHO)==LOW){
 			startTime=clock();
 		}
 		
@@ -46,7 +47,7 @@ void * echoSensorData(void * argument)
 		}
 		
 		pulseDuration=((double)(endTime-startTime))/CLOCKS_PER_SEC;
-		
+
 		tempDistance= pulseDuration*17000;
 		
         //Discard out of range values
@@ -56,4 +57,5 @@ void * echoSensorData(void * argument)
         }
     }
 }
+
 

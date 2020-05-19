@@ -81,7 +81,6 @@ int main(void){
             printf("***Exited sharp right mechanism.\n");
             continue;
         }
-
     }
     
     printf("Waiting for the created thread to terminate\n");
@@ -101,12 +100,12 @@ int main(void){
 }
 
 
+
 //interrupt handler
 void  interruptHandler(){
     printf("The interrupt handler was called. Its time to cleanup.\n");
     printf("Slowing down the motors...\n");
     motorsStop();
-    
 
     printf("Resetting the pins to input\n");
     resetMotorPins();
