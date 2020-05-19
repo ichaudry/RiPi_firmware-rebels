@@ -5,10 +5,9 @@
 #ifndef FIRMWARE_REBELS_ROBOT_MOTORS_H
 #define FIRMWARE_REBELS_ROBOT_MOTORS_H
 
-
 #define Motor1Pin1		2 //13
 #define Motor1Pin2		3 //15
-#define Motor1Enable	0
+#define Motor1Enable	0 //11
 
 #define Motor2Pin1		4 //18
 #define Motor2Pin2		5 //16
@@ -29,39 +28,51 @@
 
 
 //Initialize PWM settings
-void initializePWM();
+void * initializePWM();
 
 //Initialize Motor Pins
-void initializeMotors();
+void * initializeMotors();
 
 //To reset pins on program exit
-void resetPins();
+void * resetMotorPins();
 
 //Initialize individual motors to move forward
-void initializeMotor1F();
-void initializeMotor2F();
-void initializeMotor3F();
-void initializeMotor4F();
+void * initializeMotor1F();
+void * initializeMotor2F();
+void * initializeMotor3F();
+void * initializeMotor4F();
 
 //Initialize individual motors to move backward
-void initializeMotor1B();
-void initializeMotor2B();
-void initializeMotor3B();
-void initializeMotor4B();
+void * initializeMotor2B();
+void * initializeMotor1B();
+void * initializeMotor3B();
+void * initializeMotor4B();
 
 //Initialize all motors to move forward
-void initializeMotorsF();
+void * initializeMotorsF();
 
 //Initialize all motors to move backward
-void initializeMotorsB();
+void * initializeMotorsB();
 
-void accelerate();
-void brake();
-void moveForward();
-void moveBackward ();
-void turnRight();
-void turnLeft();
-void stop();
 
+void * initializeRightB();
+
+void * initializeRightF();
+
+void * initializeLeftB();
+
+void * initializeLeftF();
+
+void * accelerate(int speed1, int speed2);
+void * brake(int speed1, int speed2);
+void * motorsStop();
+void * moveForward(int speed1, int speed2);
+void * moveBackward (int speed1, int speed2);
+void * turnRight();
+void * turnLeft();
+void * allMotorsSpeed(int speed);
+void * setMotors(int rightDirection,int leftDirection,int rightFront,int rightRear,int leftRear, int leftFront);
+void * leftSpeed(int rearSpeed, int frontSpeed);
+void * rightSpeed(int rearSpeed, int frontSpeed);
 
 #endif //FIRMWARE_REBELS_ROBOT_MOTORS_H

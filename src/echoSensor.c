@@ -1,42 +1,44 @@
+//
+// Created by ibraheem on 5/12/20.
+//
 #include <stdio.h>
 #include <stdlib.h>
 #include <wiringPi.h>
-#include "echoSensor.h"
+#include "sensors.h"
+#include <ctype.h>
 #include <time.h>
 
 
+void * echoSensorData(void * argument)
+    {
+        printf("Entered the %s function\n",__FUNCTION__);
+        
+        //Set pin mode
+        pinMode(TRIGGER,OUTPUT);
+        pinMode(ECHO,INPUT);
 
+        double * distance= (double *) argument;
 
-
-	void * initEchoSensor(){
-	//Set pin mode
-	pinMode(TRIGGER,OUTPUT);
-	pinMode(ECHO,INPUT);
-    }
-	
-
-    void * echoSensorData(){
+        while(1)
+        {
 		double startTime=0;
 		double endTime=0;
 		double pulseDuration=0;
-		double * distance= malloc(sizeof(double));
-		
-		
+		double tempDistance;
+        
 		
 		//Set trigger to low initially
 		digitalWrite(TRIGGER,LOW);
-		printf("Waiting for the sensor to settle\n");
-		delay(500);
-		
+		// printf("Waiting for the sensor to settle\n");
+		delay(100);
 		
 		//Set trigger to high and then low to send signal 
 		digitalWrite(TRIGGER,HIGH);
 		delay(0.05);
 		digitalWrite(TRIGGER,LOW);
 		
-			
-		
-        while(digitalRead(ECHO)==LOW){
+
+    while(digitalRead(ECHO)==LOW){
 			startTime=clock();
 		}
 		
@@ -45,18 +47,15 @@
 		}
 		
 		pulseDuration=((double)(endTime-startTime))/CLOCKS_PER_SEC;
+
+		tempDistance= pulseDuration*17000;
 		
-		*distance= pulseDuration*17000;
-		
-        
         //Discard out of range values
-		if(*distance > 2 && *distance < 350){
-			printf("The distance is: %f\n",*distance);
-            return (void *) distance;
+		if(tempDistance > 2 && tempDistance < 350){
+			//printf("The distance is: %f\n",tempDistance);
+            *distance=tempDistance;
         }
-        else{
-            free(distance);
-            return NULL;
-        }
-	}
-	
+    }
+}
+
+
