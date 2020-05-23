@@ -5,74 +5,183 @@
 #include "motors.h"
 #include "sensors.h"
 
-void * obstacleAvoidance(){
-    //obstacle front stop   
+
+void * obstacleDetector(){
+    while(1){
+    
+     if(sData->distance<OBSTACLESTOPPINGDISTANCE ){
+            // printf("Distance after first if: %f\n",sData->distance);
+            //Stop the car
+            motorsStop();
+
+            //Halt line detection 
+            haltLineDetection=1;
+            printf("Dramatic Pause\n");
+
+            //Dramatic Pause
+            delay(5000);
             
-        printf("Entered the %s function\n",__FUNCTION__);
+            //Check if obstacle has cleared
+            if(sData->distance>OBSTACLESTOPPINGDISTANCE){
+                allMotorsSpeed(NORMALSPEED);
+                haltLineDetection=0;
+                break;
+            }
 
-        //Stop car
-        motorsStop();
+            //Call mechanism to go around obstacle
+            obstacleAvoidance();
 
-        delay(3000);
-
-        printf("Making right turn\n");
-        // Turn right until left obstacle true
-
-        initializeRightB();
-        initializeLeftF();
-        rightSpeed(TURNINGSPEED+REARDELTA,TURNINGSPEED);
-        leftSpeed(TURNINGSPEED+REARDELTA,TURNINGSPEED);
-
-        // delay(1000);
-
-        while(!sData->obstacleLeftF){
-            
+            //Unlock main functioning loop to stay centered on line
+            haltLineDetection=0;
         }
-            
-        motorsStop();
-
-        delay(3000);
-
-        printf("Go to next step\n");
-        printf("Left Obstacle=%d\n",sData->obstacleLeftF);
-
-        delay(3000);
-
-        initializeRightF();
-        rightSpeed(CREEPSPEED+REARDELTA,CREEPSPEED);
-        leftSpeed(CREEPSPEED+REARDELTA,CREEPSPEED);
-        
-        while(sData->obstacleLeftF){
-            
-        }
-        printf("Time to turn left\n");
-
-        //Stop after no obstacle on the left
-        motorsStop();
-
-        delay(3000);
-
-        printf("Make a left until obstacle detected on the left\n");
-
-        initializeRightF();
-        initializeLeftB();
-        rightSpeed(TURNINGSPEED+REARDELTA,TURNINGSPEED);
-        leftSpeed(TURNINGSPEED+REARDELTA-5,TURNINGSPEED-5);
+    }
+}
 
 
-        while (!sData->obstacleLeftM)
+
+void * obstacleAvoidance(){       
+    printf("Entered the %s function\n",__FUNCTION__);
+
+    //Get close to the obstacle to allow side sensors to function properly
+    if(sData->distance>OBSTACLECREEPINGDISTANCE)
+    {
+        initializeMotorsF();
+        while(sData->distance>OBSTACLECREEPINGDISTANCE)
         {
-            
+            allMotorsSpeed(CREEPSPEED);
+            delay(CREEPDELAY);
+            motorsStop();
+            delay(PULSEDELAY);
+            printf("The distance now is %f\n",sData->distance);
         }
+    }
+    //If too close back up a little bit
+    else
+    {
+        initializeMotorsB();
+        while(sData->distance<OBSTACLECREEPINGDISTANCE)
+        {
+            allMotorsSpeed(CREEPSPEED);
+            delay(CREEPDELAY);
+            motorsStop();
+            delay(PULSEDELAY);
+            printf("The distance now is %f\n",sData->distance);
+        }
+    }
+    
+    //Get slightly closer to more accuracy
+    initializeMotorsF();
+    allMotorsSpeed(CREEPSPEED);
+    delay(50);
+    motorsStop();
 
-        // delay(500);
+    delay(PULSEDELAY);
 
+    //Init motors for right turn
+    initializeRightB();
+    initializeLeftF();
+
+    //Swing right until the rear left IR sensor detects obstacle
+    //At that point the RiPi would be parrallel to the obstacle
+    while(!sData->obstacleLeftB){
+        allMotorsSpeed(TURNINGCREEPSPEED);
+        delay(CREEPTURNDELAY);
         motorsStop();
+        delay(PULSEDELAY);
+    }
 
-        printf("Time to go forward alongside the object\n");
+    //Init motors to go forward
+    initializeRightF();
+    delay(PULSEDELAY);
 
-        while(1){
-            printf("Left Obstacle=%d\n",sData->obstacleLeftM);
-            delay(3000);
+    //Creep forward parallell to obstacle until no more obstacle is detected by the rear left IR sensor
+    while (sData->obstacleLeftB){
+        allMotorsSpeed(CREEPSPEED);
+        delay(CREEPDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+    }
+
+    delay(PULSEDELAY);
+
+    //Init motors for left turn
+    initializeRightF();
+    initializeLeftB();
+
+    //Turn left until front left IR sensor detects obstacle at which point the car will be parralel to the obstacle
+    while(!sData->obstacleLeftF){
+        rightSpeed(TURNINGCREEPSPEED,TURNINGCREEPSPEED);
+        // allMotorsSpeed(TURNINGCREEPSPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+    }
+
+    delay(PULSEDELAY);
+    initializeLeftF();
+
+    //Creep forward until the object is detected by the left rear IR sensor
+    while(!sData->obstacleLeftB){
+        allMotorsSpeed(CREEPSPEED);
+        delay(CREEPDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+    }
+
+    // printf("Obstacle now being sensed on the left rear. Keep going forward until clear the object from the rear.\n");
+    delay(PULSEDELAY);
+
+    //Creep forward until the left rear sensor no longer detects an obstacle meaning the bot has cleared the obstacle
+    while(sData->obstacleLeftB){
+        allMotorsSpeed(CREEPSPEED);
+        delay(CREEPDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+    }
+
+    // printf("Obstacle cleared. Turn left to merge back onto line\n");
+
+    delay(PULSEDELAY);
+
+    //Init motors for left turn
+    initializeRightF();
+    initializeLeftB();
+
+    //Turn left until front left IR sensor detects obstacle at which point the car will be parralel to the obstacle
+    while(!sData->obstacleLeftF){
+        allMotorsSpeed(TURNINGCREEPSPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+    }
+
+    // printf("Going forward until line reached\n");
+
+    delay(PULSEDELAY);
+    initializeLeftF();
+
+    //Creep forward until all line sensors detect black line
+    while(1){
+        allMotorsSpeed(CREEPSPEED);
+        delay(CREEPDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+        if(!sData->whiteLineFarLeft && !sData->whiteLineLeft && !sData->whiteLineMiddle && !sData->whiteLineRight && !sData->whiteLineFarRight){
+            printf("Black line reached!\n");
+            break;
         }
+    }
+
+    ///Go forward until all sensor off the black line
+    while(!sData->whiteLineFarLeft || !sData->whiteLineFarRight || !sData->whiteLineMiddle || !sData->whiteLineRight || !sData->whiteLineMiddle){
+        //creep forward until above becomes false
+        allMotorsSpeed(CREEPSPEED);
+        delay(CREEPDELAY);
+        motorsStop();
+        delay(PULSEDELAY);
+        
+    }
+  
+    //Turn right to get entered on black line
+    rightSharpTurn();
 }

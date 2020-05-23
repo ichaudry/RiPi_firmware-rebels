@@ -25,20 +25,18 @@ void * echoSensorData(void * argument)
 		double endTime=0;
 		double pulseDuration=0;
 		double tempDistance;
-        
 		
 		//Set trigger to low initially
 		digitalWrite(TRIGGER,LOW);
 		// printf("Waiting for the sensor to settle\n");
-		delay(100);
+		delay(300);
 		
 		//Set trigger to high and then low to send signal 
 		digitalWrite(TRIGGER,HIGH);
 		delay(0.05);
 		digitalWrite(TRIGGER,LOW);
 		
-
-    while(digitalRead(ECHO)==LOW){
+        while(digitalRead(ECHO)==LOW){
 			startTime=clock();
 		}
 		
@@ -47,7 +45,7 @@ void * echoSensorData(void * argument)
 		}
 		
 		pulseDuration=((double)(endTime-startTime))/CLOCKS_PER_SEC;
-
+		
 		tempDistance= pulseDuration*17000;
 		
         //Discard out of range values
@@ -57,5 +55,4 @@ void * echoSensorData(void * argument)
         }
     }
 }
-
 

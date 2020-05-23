@@ -30,7 +30,6 @@ void * lineSensor1Data(void * argument)
 }
 
 
-
 void * lineSensor2Data(void * argument)
     {
     printf("Entered the %s function\n",__FUNCTION__);

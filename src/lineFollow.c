@@ -6,74 +6,170 @@
 #include "sensors.h"
 
 void * rightCorrectiveMechanism(){
-    // Veer right
-    leftSpeed(NORMALSPEED+TURNINGDELTASPEED,NORMALSPEED+TURNINGDELTASPEED);
-    rightSpeed(ZERO,ZERO);
+    printf("Entered %s function\n",__FUNCTION__);
 
-    // printf("Right Speed when veering right: %f\n",sData->rightSpeed);
-    printf("Left Speed increased to make a right\n");
+    delay(100);
+
+    //Init motors for right turn
+    initializeRightB();
+    initializeLeftF();
 
     //Loop until whiteLineRight
-    while(!sData->whiteLineRight){}
-    
-    //Slight jerk to the left
-    rightSpeed(NORMALSPEED+JERKSPEED,NORMALSPEED+JERKSPEED);
-    leftSpeed(ZERO,ZERO);
+    while(!sData->whiteLineRight && !haltLineDetection){
+        //Turn with slight delays
+        allMotorsSpeed(TURNINGCURVESPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
 
-    delay(300);
+        //This catches sharp right turns
+        if(!sData->whiteLineFarRight){
+            printf("Make 90 degree right turn\n");
+            initializeRightF();
 
-    allMotorsSpeed(NORMALSPEED);
+            //Go forward until all sensor off the black line
+            while(!sData->whiteLineFarLeft || !sData->whiteLineFarRight || !sData->whiteLineMiddle || !sData->whiteLineRight || !sData->whiteLineMiddle){
+                //creep forward until above becomes false
+                allMotorsSpeed(CREEPSPEED);
+                delay(CREEPDELAY);
+                motorsStop();
+                delay(PULSEDELAY);
+                
+            }
+            //Call sharp turn function
+            rightSharpTurn();
+            break;
+        }
+
+        delay(200);
+    }
+  
+    delay(50);
+
+    if(!haltLineDetection){
+        initializeRightF();
+        delay(50);
+    }
+    else{
+        motorsStop();
+    }
 }
 
 
 void * leftCorrectiveMechanism(){
-    //Veer left  
-    rightSpeed(NORMALSPEED+TURNINGDELTASPEED,NORMALSPEED+TURNINGDELTASPEED);
-    leftSpeed(ZERO,ZERO);
+    printf("Entered %s function\n",__FUNCTION__);
+    delay(100);
 
-    printf("Right Speed increased to make a left\n");
+    //Init motors for left turn
+    initializeRightF();
+    initializeLeftB();
 
     //Loop until whiteLineLeft
-    while(!sData->whiteLineLeft){}
+    while(!sData->whiteLineLeft && !haltLineDetection){
+        allMotorsSpeed(TURNINGCURVESPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
 
-    //Slight jerk to the right
-    leftSpeed(NORMALSPEED+JERKSPEED,NORMALSPEED+JERKSPEED);
-    rightSpeed(ZERO,ZERO);
-    delay(300);
-
-    allMotorsSpeed(NORMALSPEED);
+        //This means left 90 degree turn
+        if(!sData->whiteLineFarLeft){
+            printf("Make right degree left turn\n");
+            initializeLeftF();
+            while(!sData->whiteLineFarLeft || !sData->whiteLineFarRight || !sData->whiteLineMiddle || !sData->whiteLineRight || !sData->whiteLineMiddle){
+                //creep forward until above becomes false
+                allMotorsSpeed(CREEPSPEED);
+                delay(CREEPDELAY);
+                motorsStop();
+                delay(PULSEDELAY);
+            }
+            leftSharpTurn();
+            break;
+        }
+        delay(200);
+    }
+    
+    if(!haltLineDetection){
+        initializeLeftF();
+        delay(50);
+    }
+    else{
+        motorsStop();
+    }
 }
 
 void * rightSharpTurn(){
     printf("Entered %s function\n",__FUNCTION__);
     motorsStop();
 
-    while(1){
+    delay(ONESEC);
 
+    //Init motors for right turn
+    initializeRightB();
+    initializeLeftF();
+
+    //Turn right until !whiteLineRight 
+    while(sData->whiteLineRight){
+        allMotorsSpeed(TURNINGCURVESPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
+        delay(CREEPDELAY);
     }
-    //Sensor on extreme right activated i.e. on black line
-        //Sharp right/90 degree turn
-        // if(!sData->l2 ){
-        //     printf("Making Hard right turn\n");
-            
-        //     leftSpeed(NORMALSPEED,NORMALSPEED);
-        //     initializeRightB();
-        //     rightSpeed(NORMALSPEED,NORMALSPEED);
-            
-        //     while(!sData->l2){
-        //         //Waiting for sensor to get back on white line
-        //     }
-        //     initializeRightF();
-        //     rightSpeed(NORMALSPEED+JERKSPEED,NORMALSPEED+JERKSPEED);
-        //     // leftSpeed(NORMALSPEED-TURNINGSUBDELTASPEED,NORMALSPEED-TURNINGSUBDELTASPEED);
-        //     leftSpeed(ZERO,ZERO);
 
-        //     delay(300);
+    delay(PULSEDELAY);
 
-        //     allMotorsSpeed(NORMALSPEED);
-        //     // printf("Right Speed after veering right: %f\n",sData->rightSpeed);
-            
-        //     printf("***Exited sharp right mechanism.\n");
-        
-        // }
+    printf("Right sensor on Black tape\n");
+
+    //Turn right until whiteLineRight
+    while(!sData->whiteLineRight){
+        //Init motors for right turn
+        allMotorsSpeed(TURNINGCURVESPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
+        delay(CREEPDELAY);
+    }
+
+    printf("Right sensor on white tape\n");
+
+    //At this point the car is centered itself on the black tape
+
+    delay(PULSEDELAY);    
+}
+
+
+void * leftSharpTurn(){
+    printf("Entered %s function\n",__FUNCTION__);
+    motorsStop();
+
+    delay(ONESEC);
+
+    //Init motors for left turn
+    initializeRightF();
+    initializeLeftB();
+
+    //Turn left until !whiteLineLeft
+    while(sData->whiteLineLeft){
+        //Init motors for right turn
+        allMotorsSpeed(TURNINGCURVESPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
+        delay(CREEPDELAY);
+    }
+
+    delay(PULSEDELAY);
+
+    printf("Left sensor on black tape\n");
+
+    //Turn left until whiteLineLeft
+    while(!sData->whiteLineLeft){
+        //Init motors for right turn
+        allMotorsSpeed(TURNINGCURVESPEED);
+        delay(CREEPTURNDELAY);
+        motorsStop();
+        delay(CREEPDELAY);
+    }
+
+    printf("Right sensor on white tape\n");
+
+    //At this point the car is centered itself on the black tape
+
+    delay(PULSEDELAY);
+
 }

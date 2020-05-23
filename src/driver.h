@@ -5,15 +5,23 @@
 #ifndef DUMMY_FOR_PI_DRIVER_H
 #define DUMMY_FOR_PI_DRIVER_H
 
-#define STARTINGSPEED               20
-#define NORMALSPEED                 20
-#define TURNINGDELTASPEED           30
-#define ZERO                        0
-#define JERKSPEED                   15
-#define OBSTACLEDISTANCE            40
-#define CREEPSPEED                  25
-#define REARDELTA                   10
+#define NORMALSPEED                         20
+#define TURNINGDELTASPEED                   28
+#define TURNINGSPEED                        30
+#define OBSTACLESTOPPINGDISTANCE            30
+#define OBSTACLECREEPINGDISTANCE            4
+#define CREEPSPEED                          25
+#define TURNINGCREEPSPEED                   70
+#define TURNINGCURVESPEED                   60
+#define ZERO                                0
+#define CREEPTURNDELAY                      70
+#define CREEPDELAY                          100
+#define PULSEDELAY                          500
+#define ONESEC                              1000
 
+/*
+*Structure to store data from sensors
+*/
 typedef struct{
     double distance;
     unsigned int whiteLineFarRight;
@@ -26,17 +34,20 @@ typedef struct{
     unsigned int obstacleLeftB;
 }sensorData;
 
-
 sensorData * sData;
+unsigned int haltLineDetection;
 
 void * rightCorrectiveMechanism();
 void * leftCorrectiveMechanism();
 void * rightSharpTurn();
+void * leftSharpTurn();
 
+//Function to check sensors and motor
 void * sensorDataCheck();
 void * motorCheck();
 
 //Obstacle avoidance function
+void * obstacleDetector();
 void * obstacleAvoidance();
 
 //interrupt handler
