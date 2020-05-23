@@ -5,7 +5,6 @@
 #include "motors.h"
 #include "sensors.h"
 
-
 void * motorCheck(){
     printf("Checking all motors.\n");
     //Motor Check code  
@@ -20,7 +19,6 @@ void * motorCheck(){
     printf("Motor Check complete\n");
     motorsStop();
 }
-
 
 void * sensorDataCheck(){
     printf("Entered %s function\n",__FUNCTION__);
