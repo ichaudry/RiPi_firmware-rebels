@@ -1,6 +1,6 @@
 # RiPi_firmware-rebels
 Artificially intelligent car made by interfacing sensors onto a raspberry pi. RiPi is designed to follow a black line and detect obstacles along its path. Upon detection of obstacle the bot with wait for 5 seconds for obstacle to clear, otherwise it will go around the obstacle and merge back onto black line.
-##### Hardware Specifications:
+### Hardware Specifications:
 - DC Motors
     - Size(Approx): 7 x 2.2 x 1.9cm/2.76 x 0.87" x 0.75"   
     - Maximum torque: 800gf cm min (3V) ; No-load speed: 1:48 (3V time)
@@ -33,5 +33,5 @@ Artificially intelligent car made by interfacing sensors onto a raspberry pi. Ri
     - Built-in Ambient Light Sensor
     - 20mA supply current
 
-##### Schematic Diagram:
+### Schematic Diagram:
 ![schematic-diagram](https://github.com/ichaudry/RiPi_firmware-rebels/blob/master/schematic_diagram.png)
